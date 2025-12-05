@@ -11,7 +11,7 @@ val BackgroundDark = Color(0xFF101C22)
 
 // CARDS
 val CardLight = Color(0xFFFFFFFF)
-val CardDark = Color(0xFF111C22)
+val CardDark = Color(0xFF132128)
 
 // TEXT
 val TextPrimaryLight = Color(0xFF111827)
