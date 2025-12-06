@@ -1,17 +1,22 @@
 package com.example.checkit.screens
 
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,32 +26,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.checkit.R
 import com.example.checkit.model.Task
 import com.example.checkit.model.TaskRepository.tasks
 import com.example.checkit.ui.theme.CheckItTheme
 import com.example.checkit.ui.theme.Gray200
 import com.example.checkit.ui.theme.Gray500
+import com.example.checkit.ui.theme.Primary
+import com.example.checkit.ui.theme.Shapes
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeScreen(){
     Scaffold (
-        topBar = { TopAppBar() }
-    ){ it ->
+        topBar = { TopAppBar() },
+        floatingActionButton = { ButtonNewTask() }
+    ) { it ->
         LazyColumn (contentPadding = it){
-            items(tasks) {
-                TaskCard(
-                    it
-                )
-            }
-        }
+            item { Title() }
 
+            items(tasks) { TaskCard(it) }
+        }
     }
 }
 
@@ -57,7 +65,9 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
     Card(
-        modifier = modifier.fillMaxWidth().padding(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -66,6 +76,10 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = { isChecked = !isChecked },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Primary,
+                    checkmarkColor = Gray200,
+                )
             )
             Column {
                 Text(
@@ -83,6 +97,23 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
     }
 }
 
+@Composable
+fun Title(modifier: Modifier = Modifier){
+    Row (modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Icon(
+            painter = painterResource(R.drawable.calendar_check),
+            contentDescription = stringResource(R.string.icono_calendar_description)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.mis_tareas),
+            style = MaterialTheme.typography.titleLarge,
+            fontSize = 24.sp
+        )
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(modifier: Modifier = Modifier){
@@ -91,6 +122,7 @@ fun TopAppBar(modifier: Modifier = Modifier){
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
+                fontSize = 32.sp
             )
         },
         modifier = modifier,
@@ -98,6 +130,24 @@ fun TopAppBar(modifier: Modifier = Modifier){
             containerColor = MaterialTheme.colorScheme.background
         )
     )
+}
+
+@Composable
+fun ButtonNewTask(modifier: Modifier = Modifier){
+    FloatingActionButton(
+        {  },
+        modifier.padding(16.dp).size(64.dp),
+        containerColor = Primary,
+        contentColor = Gray200,
+        shape = Shapes.extraLarge
+
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.add_2),
+            contentDescription = stringResource(R.string.add_task_icon_button_description),
+            Modifier.size(32.dp)
+        )
+    }
 }
 
 @Preview
