@@ -34,6 +34,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
 import com.example.checkit.model.Task
 import com.example.checkit.model.TaskRepository.tasks
@@ -45,10 +48,10 @@ import com.example.checkit.ui.theme.Shapes
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(navController: NavHostController) {
     Scaffold (
         topBar = { TopAppBar() },
-        floatingActionButton = { ButtonNewTask() }
+        floatingActionButton = { ButtonNewTask(navController) }
     ) { it ->
         LazyColumn (contentPadding = it){
             item { Title() }
@@ -133,9 +136,9 @@ fun TopAppBar(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun ButtonNewTask(modifier: Modifier = Modifier){
+fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier){
     FloatingActionButton(
-        {  },
+        { navController.navigate("formNewTask") },
         modifier.padding(16.dp).size(64.dp),
         containerColor = Primary,
         contentColor = Gray200,
@@ -154,7 +157,8 @@ fun ButtonNewTask(modifier: Modifier = Modifier){
 @Composable
 fun PreviewHomeScreen(){
     CheckItTheme {
-        HomeScreen()
+        val navController = rememberNavController()
+        HomeScreen(navController)
     }
 }
 
