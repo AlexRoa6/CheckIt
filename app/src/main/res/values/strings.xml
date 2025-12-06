@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CheckIt</string>
+    <string name="icono_calendar_description">Icono calendar</string>
+    <string name="mis_tareas">Mis Tareas</string>
+    <string name="add_task_icon_button_description">Add Task Icon Button</string>
 </resources>
