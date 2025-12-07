@@ -40,10 +40,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -55,12 +53,13 @@ import com.example.checkit.ui.theme.IconBgDark
 import com.example.checkit.ui.theme.IconBgLight
 import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.Shapes
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Locale
 
+/**
+ * Funcion que compone  el UI de la pantalla para crear una nueva tarea
+ */
 @Composable
 fun NewTaskForm(navController: NavHostController) {
     Scaffold(
@@ -74,6 +73,10 @@ fun NewTaskForm(navController: NavHostController) {
     }
 }
 
+
+/**
+ * Compone el formulario completo
+ */
 @Composable
 fun Form(modifier: Modifier = Modifier) {
 
@@ -95,6 +98,9 @@ fun Form(modifier: Modifier = Modifier) {
 
 }
 
+/**
+ * Elemento del formulario que representa el titulo de la nueva tarea
+ */
 @Composable
 fun TaskTitle() {
     var titleOfTask by remember { mutableStateOf("") }
@@ -126,6 +132,9 @@ fun TaskTitle() {
     }
 }
 
+/**
+ * Elemento del formulario que representa la descripcion de la nueva tarea
+ */
 @Composable
 fun TaskDescription() {
     var description by remember { mutableStateOf("") }
@@ -162,6 +171,10 @@ fun TaskDescription() {
     }
 }
 
+
+/**
+ * Elemento del formulario que representa la fecha de vencimiento de la nueva tarea
+ */
 @Composable
 fun DueDate() {
     val date = remember { mutableStateOf(LocalDate.now()) }
@@ -202,8 +215,8 @@ fun DueDate() {
             onDismissRequest = { showDatePicker.value = false },
             confirmButton = {
                 TextButton({
-                    datePickerState.selectedDateMillis?.let { Millis ->
-                        date.value = Instant.ofEpochMilli(Millis)
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        date.value = Instant.ofEpochMilli(millis)
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate()
                     }
@@ -222,7 +235,9 @@ fun DueDate() {
     }
 }
 
-
+/**
+ * Elemento del formulario que representa la prioridad de la nueva tarea
+ */
 @Composable
 fun TaskPriority() {
     val priorityOptions = listOf("Baja", "Media", "Alta")
@@ -245,6 +260,9 @@ fun TaskPriority() {
     }
 }
 
+/**
+ * Compone las diferentes prioridades de la tarea em una Row
+ */
 @Composable
 fun PriorityToggle(
     options: List<String>,
@@ -280,14 +298,17 @@ fun PriorityToggle(
     }
 }
 
+/**
+ * Barra de arriba que contiene el titulo de la pantalla y el titulo de la pantalla
+ * y el boton de cancelar la creacion de una nueva tarea
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(onCancel: () -> Unit) {
     CenterAlignedTopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        ),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background),
         navigationIcon = {
             Text(
                 text = stringResource(R.string.cancelar),
@@ -307,6 +328,10 @@ fun TopBar(onCancel: () -> Unit) {
     )
 }
 
+
+/**
+ * Boton de guardar la nueva tarea creada
+ */
 @Composable
 fun SaveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(
