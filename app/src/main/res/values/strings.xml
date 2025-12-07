@@ -11,5 +11,7 @@
     <string name="dueDate_label">Fecha de Vencimiento</string>
     <string name="dueDate_plcaeholder">Seleccionar fecha</string>
     <string name="cancelar">Cancelar</string>
-    <string name="nueva_tarea">Nueva Tarea</string>s
+    <string name="nueva_tarea">Nueva Tarea</string>
+    <string name="saveButon">Guardar Tarea</string>
+    <string name="priority_label">Prioridad</string>s
 </resources>
