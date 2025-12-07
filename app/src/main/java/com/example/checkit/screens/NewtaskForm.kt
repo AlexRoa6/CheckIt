@@ -1,5 +1,6 @@
 package com.example.checkit.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import com.example.checkit.R
 import com.example.checkit.ui.theme.CheckItTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,20 +26,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -50,6 +56,9 @@ import com.example.checkit.ui.theme.IconBgLight
 import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.Shapes
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Locale
 
 @Composable
@@ -92,7 +101,7 @@ fun TaskTitle() {
     Column {
         Text(
             text = stringResource(R.string.titleLabel),
-            Modifier.padding(bottom = 8.dp),
+            Modifier.padding(bottom = 8.dp, start = 4.dp),
             style = MaterialTheme.typography.headlineSmall
         )
         OutlinedTextField(
@@ -123,7 +132,7 @@ fun TaskDescription() {
     Column {
         Text(
             text = stringResource(R.string.description_label),
-            Modifier.padding(bottom = 8.dp),
+            Modifier.padding(bottom = 8.dp, start = 4.dp),
             style = MaterialTheme.typography.headlineSmall
         )
         OutlinedTextField(
@@ -155,85 +164,64 @@ fun TaskDescription() {
 
 @Composable
 fun DueDate() {
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
+    val date = remember { mutableStateOf(LocalDate.now()) }
+    val showDatePicker = remember { mutableStateOf(false) }
 
     Column {
         Text(
-            text = stringResource(R.string.dueDate_label),
-            Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.headlineSmall
+            text = stringResource(R.string.fecha_label),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
         )
-
-        TextField(
-            value = selectedDate,
-            onValueChange = {},
-            readOnly = true,
-            placeholder = {
-                Icon(
-                    painter = painterResource(R.drawable.calendar_month),
-                    contentDescription = null,
-                )
-
-                Text(
-                    stringResource(R.string.dueDate_plcaeholder),
-                    modifier = Modifier.padding(start = 32.dp),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            },
+        OutlinedButton(
+            onClick = { showDatePicker.value = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { showDialog = true },
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = IconBgDark,
-                focusedContainerColor = IconBgDark,
-                unfocusedBorderColor = BackgroundDark,
-                focusedBorderColor = BackgroundDark
-            ),
-            shape = Shapes.medium
-        )
-
-        if (showDialog) {
-            DatePickerModal(
-                onDateSelected = { dateMillis ->
-                    dateMillis?.let {
-                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                        selectedDate = sdf.format(it)
+                .height(64.dp),
+            shape = Shapes.medium,
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = IconBgDark),
+            border = BorderStroke(1.dp, color = IconBgDark),
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.calendar_month),
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(date.value.toString())
+            }
+        }
+    }
+    if (showDatePicker.value) {
+        val datePickerState = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker.value = false },
+            confirmButton = {
+                TextButton({
+                    datePickerState.selectedDateMillis?.let { Millis ->
+                        date.value = Instant.ofEpochMilli(Millis)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
                     }
-                    showDialog = false
-                },
-                onDismiss = { showDialog = false }
-            )
+                    showDatePicker.value = false
+                }) { Text("Aceptar") }
+            },
+            dismissButton = {
+                TextButton({
+                    showDatePicker.value = false
+                }) { Text("Cancelar") }
+            },
+            shape = Shapes.medium
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }
 
-@Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
-    }
-}
 
 @Composable
 fun TaskPriority() {
@@ -243,7 +231,7 @@ fun TaskPriority() {
     Column {
         Text(
             text = stringResource(R.string.priority_label),
-            Modifier.padding(bottom = 8.dp),
+            Modifier.padding(bottom = 8.dp, start = 4.dp),
             style = MaterialTheme.typography.headlineSmall
         )
         PriorityToggle(
