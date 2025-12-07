@@ -3,4 +3,15 @@
     <string name="icono_calendar_description">Icono calendar</string>
     <string name="mis_tareas">Mis Tareas</string>
     <string name="add_task_icon_button_description">Add Task Icon Button</string>
+    <string name="title_place_holder">Ej: Comprar Leche</string>
+    <string name="titleLabel">Titulo</string>
+    <string name="description_label">Decripcion (Opcional)</string>
+    <string name="description_placeholder">Añadir mas detalles…</string>
+    <string name="fecha_label">Fecha de Vencimiento</string>
+    <string name="dueDate_label">Fecha de Vencimiento</string>
+    <string name="dueDate_plcaeholder">Seleccionar fecha</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="nueva_tarea">Nueva Tarea</string>
+    <string name="saveButon">Guardar Tarea</string>
+    <string name="priority_label">Prioridad</string>s
 </resources>

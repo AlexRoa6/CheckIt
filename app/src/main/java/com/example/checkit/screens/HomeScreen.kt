@@ -34,6 +34,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
 import com.example.checkit.model.Task
 import com.example.checkit.model.TaskRepository.tasks
@@ -45,12 +48,12 @@ import com.example.checkit.ui.theme.Shapes
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HomeScreen(){
-    Scaffold (
+fun HomeScreen(navController: NavHostController) {
+    Scaffold(
         topBar = { TopAppBar() },
-        floatingActionButton = { ButtonNewTask() }
+        floatingActionButton = { ButtonNewTask(navController) }
     ) { it ->
-        LazyColumn (contentPadding = it){
+        LazyColumn(contentPadding = it) {
             item { Title() }
 
             items(tasks) { TaskCard(it) }
@@ -60,7 +63,7 @@ fun HomeScreen(){
 
 
 @Composable
-fun TaskCard(task: Task, modifier: Modifier = Modifier){
+fun TaskCard(task: Task, modifier: Modifier = Modifier) {
     var isChecked by remember { mutableStateOf(task.completed) }
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
@@ -72,7 +75,7 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Row (modifier = Modifier.padding(16.dp)){
+        Row(modifier = Modifier.padding(16.dp)) {
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = { isChecked = !isChecked },
@@ -84,7 +87,7 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
             Column {
                 Text(
                     text = task.title,
-                    textDecoration =  if (isChecked) TextDecoration.LineThrough else null,
+                    textDecoration = if (isChecked) TextDecoration.LineThrough else null,
                     color = colorTask
 
                 )
@@ -98,10 +101,11 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier){
 }
 
 @Composable
-fun Title(modifier: Modifier = Modifier){
-    Row (modifier.padding(16.dp),
+fun Title(modifier: Modifier = Modifier) {
+    Row(
+        modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Icon(
             painter = painterResource(R.drawable.calendar_check),
             contentDescription = stringResource(R.string.icono_calendar_description)
@@ -109,20 +113,20 @@ fun Title(modifier: Modifier = Modifier){
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = stringResource(R.string.mis_tareas),
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 24.sp
-        )
+            style = MaterialTheme.typography.headlineLarge,
+
+            )
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(modifier: Modifier = Modifier){
+fun TopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
         title = {
             Text(
                 text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.titleLarge,
-                fontSize = 32.sp
+                style = MaterialTheme.typography.displayMedium,
             )
         },
         modifier = modifier,
@@ -133,10 +137,12 @@ fun TopAppBar(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun ButtonNewTask(modifier: Modifier = Modifier){
+fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier) {
     FloatingActionButton(
-        {  },
-        modifier.padding(16.dp).size(64.dp),
+        { navController.navigate("formNewTask") },
+        modifier
+            .padding(16.dp)
+            .size(64.dp),
         containerColor = Primary,
         contentColor = Gray200,
         shape = Shapes.extraLarge
@@ -152,9 +158,10 @@ fun ButtonNewTask(modifier: Modifier = Modifier){
 
 @Preview
 @Composable
-fun PreviewHomeScreen(){
+fun PreviewHomeScreen() {
     CheckItTheme {
-        HomeScreen()
+        val navController = rememberNavController()
+        HomeScreen(navController)
     }
 }
 
