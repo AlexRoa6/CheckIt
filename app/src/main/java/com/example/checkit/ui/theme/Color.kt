@@ -35,7 +35,7 @@ val DividerDark = Color(0x1F293780) // gray-800/50
 
 // ICON BACKGROUND
 val IconBgLight = Color(0x1A13A4EC)   // primary /10
-val IconBgDark = Color(0xFF233C48)
+val IconBgDark = Color(0xFF233C47)
 
 // CHECKBOX BORDER (dark)
 val DarkBorderCheckbox = Color(0xFF325567)
