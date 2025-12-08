@@ -3,7 +3,7 @@ package com.example.checkit.model
 import java.time.LocalDate
 
 object TaskRepository {
-    val tasks = listOf(
+    private val tasks = mutableListOf(
         Task(
             id = 1,
             title = "Hacer la cama",
@@ -47,4 +47,18 @@ object TaskRepository {
             date = LocalDate.of(2025, 12, 3)
         )
     )
+
+    fun getTasks(): List<Task>{
+        return tasks
+    }
+
+    fun updateTaskCompleted(id: Int, completed: Boolean){
+        val index = tasks.indexOfFirst { it.id == id }
+
+        if (index != -1) {
+            val oldTask = tasks[index]
+            val newTask = oldTask.copy(completed = completed)
+            tasks[index] = newTask
+        }
+    }
 }

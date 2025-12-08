@@ -1,4 +1,4 @@
-package com.example.checkit.screens
+package com.example.checkit.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,22 +34,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
 import com.example.checkit.model.Task
-import com.example.checkit.model.TaskRepository.tasks
 import com.example.checkit.ui.theme.CheckItTheme
 import com.example.checkit.ui.theme.Gray200
 import com.example.checkit.ui.theme.Gray500
 import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.Shapes
+import com.example.checkit.viewModel.HomeViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         topBar = { TopAppBar() },
         floatingActionButton = { ButtonNewTask(navController) }
@@ -56,15 +58,22 @@ fun HomeScreen(navController: NavHostController) {
         LazyColumn(contentPadding = it) {
             item { Title() }
 
-            items(tasks) { TaskCard(it) }
+            items(uiState.tasks, key = { it.id }) { task ->
+                TaskCard(
+                    task = task,
+                    onTaskCompleted = { isChecked ->
+                        viewModel.updateTaskCompletion(task, isChecked)
+                    }
+                )
+            }
         }
     }
 }
 
 
 @Composable
-fun TaskCard(task: Task, modifier: Modifier = Modifier) {
-    var isChecked by remember { mutableStateOf(task.completed) }
+fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, modifier: Modifier = Modifier) {
+    val isChecked = task.completed
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
     Card(
@@ -78,7 +87,7 @@ fun TaskCard(task: Task, modifier: Modifier = Modifier) {
         Row(modifier = Modifier.padding(16.dp)) {
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { isChecked = !isChecked },
+                onCheckedChange = onTaskCompleted,
                 colors = CheckboxDefaults.colors(
                     checkedColor = Primary,
                     checkmarkColor = Gray200,

@@ -1,4 +1,4 @@
-package com.example.checkit.screens
+package com.example.checkit.view
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.example.checkit.R
 import com.example.checkit.ui.theme.CheckItTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,31 +43,46 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.checkit.model.Priority
 import com.example.checkit.ui.theme.BackgroundDark
 import com.example.checkit.ui.theme.Gray200
 import com.example.checkit.ui.theme.IconBgDark
 import com.example.checkit.ui.theme.IconBgLight
 import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.Shapes
+import com.example.checkit.viewModel.NewTaskUiState
+import com.example.checkit.viewModel.NewTaskViewModel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * Funcion que compone  el UI de la pantalla para crear una nueva tarea
  */
 @Composable
-fun NewTaskForm(navController: NavHostController) {
+fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         topBar = { TopBar { navController.popBackStack() } }
     ) { it ->
         Box(Modifier.padding(it)) {
-            Form()
+            Form(
+                uiState = uiState,
+                onTitleChange = viewModel::onTitleChange,
+                onDescriptionChange = viewModel::onDescriptionChange,
+                onPrioritySelected = viewModel::onPriorityChange,
+                showDatePicker = viewModel::showDatePicker,
+                onDateSelected = viewModel::onDateSelected
+            )
             SaveButton({ navController.popBackStack() }, Modifier.align(Alignment.BottomCenter))
         }
 
@@ -78,7 +94,14 @@ fun NewTaskForm(navController: NavHostController) {
  * Compone el formulario completo
  */
 @Composable
-fun Form(modifier: Modifier = Modifier) {
+fun Form(
+    uiState: NewTaskUiState,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onPrioritySelected: (String) -> Unit,
+    showDatePicker: (Boolean) -> Unit,
+    onDateSelected: (Long) -> Unit, modifier: Modifier = Modifier
+) {
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -86,13 +109,18 @@ fun Form(modifier: Modifier = Modifier) {
                 .padding(8.dp)
                 .align(Alignment.TopCenter)
         ) {
-            TaskTitle()
+            TaskTitle(uiState.title, onTitleChange)
             Spacer(Modifier.height(24.dp))
-            TaskDescription()
+            TaskDescription(uiState.description, onDescriptionChange)
             Spacer(Modifier.height(24.dp))
-            DueDate()
+            DueDate(
+                uiState.dueDate,
+                showDatePicker = uiState.isDatePickerVisible,
+                onDatePickerVisibilityChange = { showDatePicker(true) },
+                onDateSelected = onDateSelected,
+                )
             Spacer(Modifier.height(24.dp))
-            TaskPriority()
+            TaskPriority(uiState.priority, onPrioritySelected)
         }
     }
 
@@ -102,8 +130,7 @@ fun Form(modifier: Modifier = Modifier) {
  * Elemento del formulario que representa el titulo de la nueva tarea
  */
 @Composable
-fun TaskTitle() {
-    var titleOfTask by remember { mutableStateOf("") }
+fun TaskTitle(newTitle: String, onTitleChange: (String) -> Unit) {
     Column {
         Text(
             text = stringResource(R.string.titleLabel),
@@ -111,8 +138,8 @@ fun TaskTitle() {
             style = MaterialTheme.typography.headlineSmall
         )
         OutlinedTextField(
-            value = titleOfTask,
-            onValueChange = { titleOfTask = it },
+            value = newTitle,
+            onValueChange = onTitleChange,
             singleLine = true,
             placeholder = {
                 Text(
@@ -136,8 +163,8 @@ fun TaskTitle() {
  * Elemento del formulario que representa la descripcion de la nueva tarea
  */
 @Composable
-fun TaskDescription() {
-    var description by remember { mutableStateOf("") }
+fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Unit) {
+
     Column {
         Text(
             text = stringResource(R.string.description_label),
@@ -145,8 +172,8 @@ fun TaskDescription() {
             style = MaterialTheme.typography.headlineSmall
         )
         OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
+            value = newDescription,
+            onValueChange = onDescriptionChange,
             singleLine = true,
             placeholder = {
                 Box(Modifier.fillMaxHeight()) {
@@ -176,57 +203,59 @@ fun TaskDescription() {
  * Elemento del formulario que representa la fecha de vencimiento de la nueva tarea
  */
 @Composable
-fun DueDate() {
-    val date = remember { mutableStateOf(LocalDate.now()) }
-    val showDatePicker = remember { mutableStateOf(false) }
+fun DueDate(
+    date: LocalDate,
+    showDatePicker: Boolean,
+    onDateSelected: (Long) -> Unit,
+    onDatePickerVisibilityChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    )
 
-    Column {
+    Column(modifier.padding(horizontal = 4.dp)) {
         Text(
             text = stringResource(R.string.fecha_label),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
+            style = MaterialTheme.typography.headlineSmall
         )
-        OutlinedButton(
-            onClick = { showDatePicker.value = true },
+        Row(
             modifier = Modifier
+                .clickable { onDatePickerVisibilityChange(true) }
                 .fillMaxWidth()
-                .height(64.dp),
-            shape = Shapes.medium,
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = IconBgDark),
-            border = BorderStroke(1.dp, color = IconBgDark),
+                .padding(vertical = 8.dp)
+                .border(
+                    BorderStroke(1.dp, BackgroundDark),
+                    Shapes.medium
+                ),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.calendar_month),
-                    contentDescription = null
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(date.value.toString())
-            }
+            Text(
+                text = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                painter = painterResource(R.drawable.calendar_month),
+                contentDescription = null
+            )
         }
     }
-    if (showDatePicker.value) {
-        val datePickerState = rememberDatePickerState()
+
+    if (showDatePicker) {
         DatePickerDialog(
-            onDismissRequest = { showDatePicker.value = false },
+            onDismissRequest = { onDatePickerVisibilityChange(false) },
             confirmButton = {
-                TextButton({
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        date.value = Instant.ofEpochMilli(millis)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                    }
-                    showDatePicker.value = false
-                }) { Text("Aceptar") }
+                Button(onClick = {
+                    datePickerState.selectedDateMillis?.let { onDateSelected(it) }
+                }) {
+                    Text(stringResource(R.string.saveButon))
+                }
             },
             dismissButton = {
-                TextButton({
-                    showDatePicker.value = false
-                }) { Text("Cancelar") }
+                Button(onClick = { onDatePickerVisibilityChange(false) }) {
+                    Text(stringResource(R.string.cancelar))
+                }
             },
             shape = Shapes.medium
         ) {
@@ -239,10 +268,11 @@ fun DueDate() {
  * Elemento del formulario que representa la prioridad de la nueva tarea
  */
 @Composable
-fun TaskPriority() {
-    val priorityOptions = listOf("Baja", "Media", "Alta")
-    var selectedPriority by remember { mutableStateOf(priorityOptions[1]) }
-
+fun TaskPriority(
+    selectedPriority: Priority,
+    onPrioritySelected: (String) -> Unit
+) {
+    val priorityOptions = Priority.entries.map { it.name }
     Column {
         Text(
             text = stringResource(R.string.priority_label),
@@ -251,10 +281,8 @@ fun TaskPriority() {
         )
         PriorityToggle(
             options = priorityOptions,
-            selectedOption = selectedPriority,
-            onOptionSelected = { newPriority ->
-                selectedPriority = newPriority
-            }
+            selectedOption = selectedPriority.name,
+            onOptionSelected = onPrioritySelected
         )
 
     }
@@ -308,7 +336,8 @@ fun TopBar(onCancel: () -> Unit) {
     CenterAlignedTopAppBar(
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background),
+            containerColor = MaterialTheme.colorScheme.background
+        ),
         navigationIcon = {
             Text(
                 text = stringResource(R.string.cancelar),
