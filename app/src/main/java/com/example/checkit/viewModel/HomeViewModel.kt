@@ -20,7 +20,7 @@ class HomeViewModel : ViewModel(){
     init {
         loadTasks()
     }
-    private fun loadTasks(){
+    fun loadTasks(){
         val currentTasks = TaskRepository.getTasks().sortedBy { it.date }
 
         _uiState.update { currentState ->

@@ -61,4 +61,14 @@ object TaskRepository {
             tasks[index] = newTask
         }
     }
+
+    fun addTask(task: Task): Boolean {
+
+        if(task.title.isNotBlank()){
+            tasks.add(task)
+            return true
+        } else{
+            return false
+        }
+    }
 }

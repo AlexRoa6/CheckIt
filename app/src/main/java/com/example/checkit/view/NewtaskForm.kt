@@ -83,7 +83,10 @@ fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = 
                 showDatePicker = viewModel::showDatePicker,
                 onDateSelected = viewModel::onDateSelected
             )
-            SaveButton({ navController.popBackStack() }, Modifier.align(Alignment.BottomCenter))
+            SaveButton(
+                { viewModel.onClickSaveButton { navController.popBackStack() } },
+                Modifier.align(Alignment.BottomCenter)
+            )
         }
 
     }
@@ -100,7 +103,8 @@ fun Form(
     onDescriptionChange: (String) -> Unit,
     onPrioritySelected: (String) -> Unit,
     showDatePicker: (Boolean) -> Unit,
-    onDateSelected: (Long) -> Unit, modifier: Modifier = Modifier
+    onDateSelected: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     Box(Modifier.fillMaxSize()) {
@@ -118,12 +122,11 @@ fun Form(
                 showDatePicker = uiState.isDatePickerVisible,
                 onDatePickerVisibilityChange = { showDatePicker(true) },
                 onDateSelected = onDateSelected,
-                )
+            )
             Spacer(Modifier.height(24.dp))
             TaskPriority(uiState.priority, onPrioritySelected)
         }
     }
-
 }
 
 /**
@@ -211,7 +214,8 @@ fun DueDate(
     modifier: Modifier = Modifier
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        initialSelectedDateMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
     )
 
     Column(modifier.padding(horizontal = 4.dp)) {
