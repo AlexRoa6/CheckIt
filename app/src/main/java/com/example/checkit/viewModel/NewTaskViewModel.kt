@@ -27,17 +27,16 @@ class NewTaskViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(NewTaskUiState())
     val uiState: StateFlow<NewTaskUiState> = _uiState.asStateFlow()
 
-    val priorityOptions: List<String> = Priority.entries.map { it.name }
     fun onTitleChange(newTitle: String){
-        _uiState.update { it.copy(title = newTitle,) }
+        _uiState.update { it.copy(title = newTitle) }
     }
 
     fun onDescriptionChange(newDescription: String){
-        _uiState.update { it.copy(description = newDescription,) }
+        _uiState.update { it.copy(description = newDescription) }
     }
 
     fun onDueDateChange(newDueDate: LocalDate){
-        _uiState.update { it.copy(dueDate = newDueDate,) }
+        _uiState.update { it.copy(dueDate = newDueDate) }
     }
 
     fun onPriorityChange(newPriority: String){
@@ -46,7 +45,7 @@ class NewTaskViewModel: ViewModel() {
     }
 
     fun showDatePicker(isVisible: Boolean){
-        _uiState.update { it.copy(isDatePickerVisible = isVisible,) }
+        _uiState.update { it.copy(isDatePickerVisible = isVisible) }
     }
 
     fun onDateSelected(millis: Long) {

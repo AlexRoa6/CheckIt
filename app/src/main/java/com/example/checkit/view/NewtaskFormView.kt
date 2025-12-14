@@ -98,7 +98,7 @@ fun Form(
     modifier: Modifier = Modifier
 ) {
 
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize()) {
         Column(
             Modifier
                 .padding(8.dp)
@@ -188,7 +188,7 @@ fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Uni
                 unfocusedBorderColor = BackgroundDark,
                 focusedBorderColor = BackgroundDark
             ),
-            shape = Shapes.medium
+            shape = Shapes.medium,
         )
     }
 }
@@ -246,12 +246,12 @@ fun DueDate(
                 Button(onClick = {
                     datePickerState.selectedDateMillis?.let { onDateSelected(it) }
                 }) {
-                    Text(stringResource(R.string.saveButon))
+                    Text(stringResource(R.string.saveDateButon), color = Gray200)
                 }
             },
             dismissButton = {
                 Button(onClick = { onDismiss() }) {
-                    Text(stringResource(R.string.cancelar))
+                    Text(stringResource(R.string.cancelar), color = Gray200)
                 }
             },
             shape = Shapes.medium
