@@ -71,4 +71,8 @@ object TaskRepository {
             return false
         }
     }
+
+    fun deleteTask(task: Task) {
+        tasks.remove(task)
+    }
 }

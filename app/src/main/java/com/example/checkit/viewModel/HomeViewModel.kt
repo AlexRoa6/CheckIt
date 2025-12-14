@@ -33,4 +33,11 @@ class HomeViewModel : ViewModel(){
             loadTasks()
         }
     }
+
+    fun onCLickDeleteTask(task: Task){
+        TaskRepository.deleteTask(task)
+        viewModelScope.launch {
+            loadTasks()
+        }
+    }
 }

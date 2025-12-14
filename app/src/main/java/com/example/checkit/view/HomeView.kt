@@ -19,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -31,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -69,7 +67,8 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
                     task = task,
                     onTaskCompleted = { isChecked ->
                         viewModel.updateTaskCompletion(task, isChecked)
-                    }
+                    },
+                    deleteTask = { viewModel.onCLickDeleteTask(task)}
                 )
             }
         }
@@ -78,7 +77,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
 
 
 @Composable
-fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Unit, modifier: Modifier = Modifier) {
     val isChecked = task.completed
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
@@ -113,7 +112,7 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, modifier: Modifier =
                     )
                 }
             }
-            IconButton({},
+            IconButton(deleteTask,
                 modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp),
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = FooterDeleteBgDark,
