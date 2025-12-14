@@ -69,7 +69,7 @@ class NewTaskViewModel: ViewModel() {
 
             TaskRepository.addTask(
                 Task(
-                    id = 0,
+                    id = TaskRepository.getTasks().size+1,
                     title = currentState.title,
                     description = currentState.description,
                     date = currentState.dueDate,

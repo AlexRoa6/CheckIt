@@ -1,5 +1,6 @@
 package com.example.checkit.view
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,9 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -39,9 +44,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
 import com.example.checkit.model.Task
 import com.example.checkit.ui.theme.CheckItTheme
+import com.example.checkit.ui.theme.FooterDeleteBgDark
 import com.example.checkit.ui.theme.Gray200
 import com.example.checkit.ui.theme.Gray500
 import com.example.checkit.ui.theme.Primary
+import com.example.checkit.ui.theme.PriorityHigh
 import com.example.checkit.ui.theme.Shapes
 import com.example.checkit.viewModel.HomeViewModel
 import java.time.format.DateTimeFormatter
@@ -83,25 +90,41 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, modifier: Modifier =
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            Checkbox(
-                checked = isChecked,
-                onCheckedChange = onTaskCompleted,
-                colors = CheckboxDefaults.colors(
-                    checkedColor = Primary,
-                    checkmarkColor = Gray200,
+        Box(Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.padding(16.dp)) {
+                Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = onTaskCompleted,
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Primary,
+                        checkmarkColor = Gray200,
+                    )
                 )
-            )
-            Column {
-                Text(
-                    text = task.title,
-                    textDecoration = if (isChecked) TextDecoration.LineThrough else null,
-                    color = colorTask
+                Column {
+                    Text(
+                        text = task.title,
+                        textDecoration = if (isChecked) TextDecoration.LineThrough else null,
+                        color = colorTask
 
-                )
-                Text(
-                    text = formattedDate,
-                    color = colorTask
+                    )
+                    Text(
+                        text = formattedDate,
+                        color = colorTask
+                    )
+                }
+            }
+            IconButton({},
+                modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = FooterDeleteBgDark,
+                    contentColor = PriorityHigh
+                ),
+                shape = Shapes.medium
+            ) {
+                Icon(painter = painterResource(R.drawable.delete_icon),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp)
                 )
             }
         }

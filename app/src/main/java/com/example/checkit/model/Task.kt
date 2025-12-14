@@ -2,7 +2,6 @@ package com.example.checkit.model
 
 
 import java.time.LocalDate
-import java.util.Date
 
 enum class Priority{
     Baja, Media, Alta
