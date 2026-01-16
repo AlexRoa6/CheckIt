@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +41,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -139,15 +142,16 @@ fun TaskTitle(newTitle: String, onTitleChange: (String) -> Unit) {
             placeholder = {
                 Text(
                     stringResource(R.string.title_place_holder),
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.surface
                 )
             },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = IconBgDark,
-                focusedContainerColor = IconBgDark,
-                unfocusedBorderColor = BackgroundDark,
-                focusedBorderColor = BackgroundDark
+                unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
+                focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                focusedBorderColor = MaterialTheme.colorScheme.background
             ),
             shape = Shapes.medium,
         )
@@ -175,7 +179,8 @@ fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Uni
                     Text(
                         stringResource(R.string.description_placeholder),
                         Modifier.align(Alignment.TopStart),
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.surface
                     )
                 }
             },
@@ -183,10 +188,10 @@ fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Uni
                 .fillMaxWidth()
                 .height(128.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = IconBgDark,
-                focusedContainerColor = IconBgDark,
-                unfocusedBorderColor = BackgroundDark,
-                focusedBorderColor = BackgroundDark
+                unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
+                focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                focusedBorderColor = MaterialTheme.colorScheme.background
             ),
             shape = Shapes.medium,
         )
@@ -222,7 +227,7 @@ fun DueDate(
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
                 .border(
-                    BorderStroke(1.dp, BackgroundDark),
+                    BorderStroke(1.dp, MaterialTheme.colorScheme.background),
                     Shapes.medium
                 ),
             verticalAlignment = Alignment.CenterVertically,
@@ -240,7 +245,7 @@ fun DueDate(
     }
 
     if (showDatePicker) {
-        DatePickerDialog(
+DatePickerDialog(
             onDismissRequest = { onDatePickerVisibilityChange(false) },
             confirmButton = {
                 Button(onClick = {
@@ -254,9 +259,42 @@ fun DueDate(
                     Text(stringResource(R.string.cancelar), color = Gray200)
                 }
             },
-            shape = Shapes.medium
+            shape = Shapes.medium,
+    colors = DatePickerDefaults.colors(containerColor = MaterialTheme.colorScheme.background),
+
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.background,
+
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    headlineContentColor = MaterialTheme.colorScheme.onBackground,
+
+                    weekdayContentColor = MaterialTheme.colorScheme.onBackground,
+                    subheadContentColor = MaterialTheme.colorScheme.onBackground,
+
+                    yearContentColor = MaterialTheme.colorScheme.onBackground,
+                    currentYearContentColor = MaterialTheme.colorScheme.primary,
+                    selectedYearContentColor = Color.White,
+                    selectedYearContainerColor = MaterialTheme.colorScheme.primary,
+
+                    dayContentColor = MaterialTheme.colorScheme.onBackground,
+                    disabledDayContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    disabledSelectedDayContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    disabledSelectedDayContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+
+                    selectedDayContentColor = Color.White,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+
+                    todayContentColor = MaterialTheme.colorScheme.primary,
+                    todayDateBorderColor = MaterialTheme.colorScheme.primary,
+
+                    dividerColor = MaterialTheme.colorScheme.outline,
+                    navigationContentColor = MaterialTheme.colorScheme.onBackground,
+
+                )
+            )
         }
     }
 }
@@ -309,13 +347,13 @@ fun PriorityToggle(
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(8.dp))
                     .clickable { onOptionSelected(option) }
-                    .background(color = if (isSelected) IconBgLight else IconBgDark)
+                    .background(color = if (isSelected) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSurface)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = option,
-                    color = Gray200,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -341,14 +379,15 @@ fun TopBar(onCancel: () -> Unit) {
                 modifier = Modifier
                     .clickable { onCancel() }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                color = Primary
+                color = MaterialTheme.colorScheme.primary
             )
         },
 
         title = {
             Text(
                 stringResource(R.string.nueva_tarea),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     )
@@ -370,7 +409,7 @@ fun SaveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.saveButon),
             style = MaterialTheme.typography.titleMedium,
-            color = Gray200
+            color = MaterialTheme.colorScheme.onBackground
 
         )
     }

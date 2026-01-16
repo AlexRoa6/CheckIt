@@ -1,6 +1,5 @@
 package com.example.checkit.view
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,9 +27,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -47,6 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
 import com.example.checkit.model.Priority
 import com.example.checkit.model.Task
+import com.example.checkit.model.TaskOrder
 import com.example.checkit.ui.theme.CheckItTheme
 import com.example.checkit.ui.theme.FooterDeleteBgDark
 import com.example.checkit.ui.theme.Gray200
@@ -68,7 +72,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
         floatingActionButton = { ButtonNewTask(navController) }
     ) { it ->
         LazyColumn(contentPadding = it) {
-            item { Title() }
+            item { Title(onOrderSelected = { order -> viewModel.changeOrder(order)}) }
 
             items(uiState.tasks, key = { it.id }) { task ->
                 TaskCard(
@@ -90,9 +94,9 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
     val borderColor = when (task.priority) {
-        Priority.Alta -> PriorityHigh
-        Priority.Media -> PriorityMedium
-        else -> PriorityLow
+        Priority.Alta -> MaterialTheme.colorScheme.error
+        Priority.Media -> MaterialTheme.colorScheme.scrim
+        else -> MaterialTheme.colorScheme.onTertiary
     }
 
     Card(
@@ -110,8 +114,9 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                     checked = isChecked,
                     onCheckedChange = onTaskCompleted,
                     colors = CheckboxDefaults.colors(
-                        checkedColor = Primary,
-                        checkmarkColor = Gray200,
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        checkmarkColor = MaterialTheme.colorScheme.surface,
+                        uncheckedColor = MaterialTheme.colorScheme.tertiary
                     )
                 )
                 Column {
@@ -132,8 +137,8 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                     .align(Alignment.CenterEnd)
                     .padding(8.dp),
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = FooterDeleteBgDark,
-                    contentColor = PriorityHigh
+                    containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.error
                 ),
                 shape = Shapes.medium
             ) {
@@ -148,8 +153,10 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
 }
 
 @Composable
-fun Title(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().padding(8.dp)){
+fun Title(modifier: Modifier = Modifier, onOrderSelected: (TaskOrder) -> Unit) {
+    Box(modifier
+        .fillMaxWidth()
+        .padding(8.dp)){
         Row (modifier.align(Alignment.CenterStart)){
             Icon(
                 painter = painterResource(R.drawable.calendar_check),
@@ -161,14 +168,14 @@ fun Title(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.headlineLarge,
             )
         }
-        IconButton({}, modifier.align(Alignment.CenterEnd)) {
-            Icon(
-                painter = painterResource(R.drawable.baseline_filter_list_24),
-                contentDescription = null
+        Box(modifier.align(Alignment.CenterEnd)) {
+            OrderDropdownMenu(
+                onOrderSelected = onOrderSelected
             )
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -194,8 +201,8 @@ fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier) {
         modifier
             .padding(16.dp)
             .size(64.dp),
-        containerColor = Primary,
-        contentColor = Gray200,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.surface,
         shape = Shapes.extraLarge
 
     ) {
@@ -221,6 +228,44 @@ fun Modifier.borderSoloIzquierdo(color: Color, width: Dp): Modifier = this.drawB
         strokeWidth = strokeWidth
     )
 
+}
+
+@Composable
+fun OrderDropdownMenu(
+    onOrderSelected: (TaskOrder) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_filter_list_24),
+                contentDescription = stringResource(R.string.ordenar)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.colorScheme.surface
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.por_prioridad)) },
+                onClick = {
+                    onOrderSelected(TaskOrder.PRIORITY)
+                    expanded = false
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.por_fecha)) },
+                onClick = {
+                    onOrderSelected(TaskOrder.DATE)
+                    expanded = false
+                }
+            )
+        }
+    }
 }
 
 @Preview

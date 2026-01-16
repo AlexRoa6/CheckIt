@@ -8,6 +8,12 @@ import java.time.LocalDate
 enum class Priority{
     Baja, Media, Alta
 }
+
+enum class TaskOrder {
+    PRIORITY,
+    DATE
+}
+
 @Entity(tableName = "task_table")
 data class Task (
     @PrimaryKey(autoGenerate = true)
