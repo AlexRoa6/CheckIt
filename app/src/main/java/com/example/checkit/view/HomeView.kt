@@ -1,5 +1,6 @@
 package com.example.checkit.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,16 +31,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.checkit.R
+import com.example.checkit.model.Priority
 import com.example.checkit.model.Task
 import com.example.checkit.ui.theme.CheckItTheme
 import com.example.checkit.ui.theme.FooterDeleteBgDark
@@ -47,8 +53,11 @@ import com.example.checkit.ui.theme.Gray200
 import com.example.checkit.ui.theme.Gray500
 import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.PriorityHigh
+import com.example.checkit.ui.theme.PriorityLow
+import com.example.checkit.ui.theme.PriorityMedium
 import com.example.checkit.ui.theme.Shapes
 import com.example.checkit.viewModel.HomeViewModel
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -80,12 +89,19 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
     val isChecked = task.completed
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) Gray500 else Gray200
+    val borderColor = when (task.priority) {
+        Priority.Alta -> PriorityHigh
+        Priority.Media -> PriorityMedium
+        else -> PriorityLow
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .borderSoloIzquierdo(borderColor, 5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface,
         )
     ) {
         Box(Modifier.fillMaxWidth()) {
@@ -112,7 +128,9 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                 }
             }
             IconButton(deleteTask,
-                modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(8.dp),
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = FooterDeleteBgDark,
                     contentColor = PriorityHigh
@@ -185,12 +203,35 @@ fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier) {
     }
 }
 
+
+fun Modifier.borderSoloIzquierdo(color: Color, width: Dp): Modifier = this.drawBehind {
+
+    val strokeWidth = width.toPx()
+    val y = size.height - strokeWidth / 2
+
+    // Ejemplo: Borde solo en la izquierda
+    drawLine(
+        color = color,
+        start = Offset(0f, 0f),
+        end = Offset(0f, size.height),
+        strokeWidth = strokeWidth
+    )
+
+}
+
 @Preview
 @Composable
 fun PreviewHomeScreen() {
     CheckItTheme {
-        val navController = rememberNavController()
-        HomeScreen(navController)
-    }
-}
+        val task: Task = Task(
+            id = 1,
+            date = LocalDate.now(),
+            title = "pepe",
+            description = "sdkjflsdkfj",
+            priority = Priority.Alta,
+            completed = false
+        )
+        TaskCard(task, {}, {})
+
+    }}
 
