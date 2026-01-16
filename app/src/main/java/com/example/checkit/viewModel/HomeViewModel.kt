@@ -2,42 +2,49 @@ package com.example.checkit.viewModel
 
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.checkit.CheckItAplication
 import com.example.checkit.model.Task
-import com.example.checkit.model.TaskRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.checkit.data.TaskRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class HomeUiState(val tasks: List<Task> = emptyList())
-class HomeViewModel : ViewModel(){
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+class HomeViewModel(private val repository: TaskRepository) : ViewModel(){
+    val uiState: StateFlow<HomeUiState> = repository.getTasks()
+        .map { HomeUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = HomeUiState()
+        )
 
-    init {
-        loadTasks()
-    }
-    fun loadTasks(){
-        val currentTasks = TaskRepository.getTasks().sortedBy { it.date }
-
-        _uiState.update { currentState ->
-            currentState.copy(tasks = currentTasks)
-        }
-    }
 
     fun updateTaskCompletion(task: Task, isCompleted: Boolean){
         viewModelScope.launch {
-            TaskRepository.updateTaskCompleted(task.id, isCompleted)
-            loadTasks()
+            repository.updateTaskCompleted(task.id, isCompleted)
         }
     }
 
     fun onCLickDeleteTask(task: Task){
-        TaskRepository.deleteTask(task)
         viewModelScope.launch {
-            loadTasks()
+            repository.deleteTask(task)
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val aplication = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as CheckItAplication)
+                HomeViewModel(aplication.repository)
+            }
         }
     }
 }

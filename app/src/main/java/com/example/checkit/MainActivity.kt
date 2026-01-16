@@ -13,6 +13,7 @@ import com.example.checkit.view.HomeScreen
 import com.example.checkit.view.NewTaskForm
 import com.example.checkit.ui.theme.CheckItTheme
 import com.example.checkit.viewModel.HomeViewModel
+import com.example.checkit.viewModel.NewTaskViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +34,9 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            HomeScreen(navController)
+            HomeScreen(navController, viewModel(factory = HomeViewModel.Factory))
         }
-        composable("formNewTask") { NewTaskForm(navController) }
+        composable("formNewTask") { NewTaskForm(navController,  viewModel(factory = NewTaskViewModel.Factory)) }
     }
 }
 

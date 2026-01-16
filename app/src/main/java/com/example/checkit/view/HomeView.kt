@@ -54,7 +54,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(key1 = true) { viewModel.loadTasks() }
     Scaffold(
         topBar = { TopAppBar() },
         floatingActionButton = { ButtonNewTask(navController) }

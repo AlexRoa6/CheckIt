@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -53,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.9.6")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,4 +63,13 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Room runtime (IMPRESCINDIBLE)
+    implementation("androidx.room:room-runtime:2.8.4")
+
+    // Anotaciones → genera el código
+    kapt("androidx.room:room-compiler:2.8.4")
+
+    // Soporte para Kotlin Coroutines (Flow)
+    implementation("androidx.room:room-ktx:2.8.4")
 }

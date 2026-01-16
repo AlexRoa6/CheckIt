@@ -1,10 +1,14 @@
 package com.example.checkit.viewModel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.checkit.CheckItAplication
 import com.example.checkit.model.Priority
 import com.example.checkit.model.Task
-import com.example.checkit.model.TaskRepository
+import com.example.checkit.data.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +27,7 @@ data class NewTaskUiState(
 
 )
 
-class NewTaskViewModel: ViewModel() {
+class NewTaskViewModel(private val repository: TaskRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(NewTaskUiState())
     val uiState: StateFlow<NewTaskUiState> = _uiState.asStateFlow()
 
@@ -34,11 +38,6 @@ class NewTaskViewModel: ViewModel() {
     fun onDescriptionChange(newDescription: String){
         _uiState.update { it.copy(description = newDescription) }
     }
-
-    fun onDueDateChange(newDueDate: LocalDate){
-        _uiState.update { it.copy(dueDate = newDueDate) }
-    }
-
     fun onPriorityChange(newPriority: String){
         val priority = Priority.valueOf(newPriority)
         _uiState.update { it.copy(priority = priority) }
@@ -66,9 +65,8 @@ class NewTaskViewModel: ViewModel() {
         viewModelScope.launch {
             val currentState = _uiState.value
 
-            TaskRepository.addTask(
+            repository.addTask(
                 Task(
-                    id = TaskRepository.getTasks().size+1,
                     title = currentState.title,
                     description = currentState.description,
                     date = currentState.dueDate,
@@ -76,8 +74,18 @@ class NewTaskViewModel: ViewModel() {
                     completed = false
                 )
             )
+            onTaskSaved()
         }
-        onTaskSaved()
+
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as CheckItAplication)
+                NewTaskViewModel(application.repository)
+            }
+        }
     }
 
 }
