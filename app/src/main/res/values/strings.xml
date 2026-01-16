@@ -13,5 +13,6 @@
     <string name="cancelar">Cancelar</string>
     <string name="nueva_tarea">Nueva Tarea</string>
     <string name="saveButon">Guardar Tarea</string>
-    <string name="priority_label">Prioridad</string>s
+    <string name="saveDateButon">Seleccionar Fecha</string>
+    <string name="priority_label">Prioridad</string>
 </resources>

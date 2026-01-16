@@ -5,12 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.checkit.screens.HomeScreen
-import com.example.checkit.screens.NewTaskForm
+import com.example.checkit.view.HomeScreen
+import com.example.checkit.view.NewTaskForm
 import com.example.checkit.ui.theme.CheckItTheme
+import com.example.checkit.viewModel.HomeViewModel
+import com.example.checkit.viewModel.NewTaskViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +33,10 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
-        composable("formNewTask") { NewTaskForm(navController) }
+        composable("home") {
+            HomeScreen(navController, viewModel(factory = HomeViewModel.Factory))
+        }
+        composable("formNewTask") { NewTaskForm(navController,  viewModel(factory = NewTaskViewModel.Factory)) }
     }
 }
 
