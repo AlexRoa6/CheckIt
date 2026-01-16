@@ -135,7 +135,7 @@ fun TaskTitle(newTitle: String, onTitleChange: (String) -> Unit) {
             Modifier.padding(bottom = 8.dp, start = 4.dp),
             style = MaterialTheme.typography.headlineSmall
         )
-        OutlinedTextField(
+OutlinedTextField(
             value = newTitle,
             onValueChange = onTitleChange,
             singleLine = true,
@@ -143,7 +143,7 @@ fun TaskTitle(newTitle: String, onTitleChange: (String) -> Unit) {
                 Text(
                     stringResource(R.string.title_place_holder),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.surface
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             },
             modifier = Modifier.fillMaxWidth(),
@@ -151,7 +151,9 @@ fun TaskTitle(newTitle: String, onTitleChange: (String) -> Unit) {
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 focusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                focusedBorderColor = MaterialTheme.colorScheme.background
+                focusedBorderColor = MaterialTheme.colorScheme.background,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground
             ),
             shape = Shapes.medium,
         )
@@ -170,19 +172,15 @@ fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Uni
             Modifier.padding(bottom = 8.dp, start = 4.dp),
             style = MaterialTheme.typography.headlineSmall
         )
-        OutlinedTextField(
+OutlinedTextField(
             value = newDescription,
             onValueChange = onDescriptionChange,
-            singleLine = true,
             placeholder = {
-                Box(Modifier.fillMaxHeight()) {
-                    Text(
-                        stringResource(R.string.description_placeholder),
-                        Modifier.align(Alignment.TopStart),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.surface
-                    )
-                }
+                Text(
+                    stringResource(R.string.description_placeholder),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -191,7 +189,9 @@ fun TaskDescription(newDescription: String, onDescriptionChange: (String) -> Uni
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 focusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                focusedBorderColor = MaterialTheme.colorScheme.background
+                focusedBorderColor = MaterialTheme.colorScheme.background,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground
             ),
             shape = Shapes.medium,
         )

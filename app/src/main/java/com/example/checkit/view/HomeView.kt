@@ -92,7 +92,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
 fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Unit, modifier: Modifier = Modifier) {
     val isChecked = task.completed
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-    val colorTask = if (isChecked) Gray500 else Gray200
+    val colorTask = if (isChecked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onBackground
     val borderColor = when (task.priority) {
         Priority.Alta -> MaterialTheme.colorScheme.error
         Priority.Media -> MaterialTheme.colorScheme.scrim
@@ -105,30 +105,32 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
             .padding(8.dp)
             .borderSoloIzquierdo(borderColor, 5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.onSurface,
         )
     ) {
         Box(Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.padding(16.dp)) {
+            Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = isChecked,
                     onCheckedChange = onTaskCompleted,
                     colors = CheckboxDefaults.colors(
                         checkedColor = MaterialTheme.colorScheme.primary,
-                        checkmarkColor = MaterialTheme.colorScheme.surface,
-                        uncheckedColor = MaterialTheme.colorScheme.tertiary
+                        checkmarkColor = MaterialTheme.colorScheme.onBackground,
+                        uncheckedColor = MaterialTheme.colorScheme.surface
                     )
                 )
                 Column {
                     Text(
                         text = task.title,
                         textDecoration = if (isChecked) TextDecoration.LineThrough else null,
-                        color = colorTask
+                        color = colorTask,
+                        style = MaterialTheme.typography.bodyLarge
 
                     )
                     Text(
                         text = formattedDate,
-                        color = colorTask
+                        color = colorTask,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -137,7 +139,7 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                     .align(Alignment.CenterEnd)
                     .padding(8.dp),
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                     contentColor = MaterialTheme.colorScheme.error
                 ),
                 shape = Shapes.medium
@@ -160,12 +162,14 @@ fun Title(modifier: Modifier = Modifier, onOrderSelected: (TaskOrder) -> Unit) {
         Row (modifier.align(Alignment.CenterStart)){
             Icon(
                 painter = painterResource(R.drawable.calendar_check),
-                contentDescription = stringResource(R.string.icono_calendar_description)
+                contentDescription = stringResource(R.string.icono_calendar_description),
+                tint = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.mis_tareas),
                 style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
         Box(modifier.align(Alignment.CenterEnd)) {
@@ -185,11 +189,13 @@ fun TopAppBar(modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         },
         modifier = modifier,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.primary
         )
     )
 }
@@ -202,14 +208,15 @@ fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier) {
             .padding(16.dp)
             .size(64.dp),
         containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         shape = Shapes.extraLarge
 
     ) {
         Icon(
             painter = painterResource(R.drawable.add_2),
             contentDescription = stringResource(R.string.add_task_icon_button_description),
-            Modifier.size(32.dp)
+            Modifier.size(32.dp),
+            tint = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -240,17 +247,23 @@ fun OrderDropdownMenu(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 painter = painterResource(R.drawable.baseline_filter_list_24),
-                contentDescription = stringResource(R.string.ordenar)
+                contentDescription = stringResource(R.string.ordenar),
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.background
         ) {
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.por_prioridad)) },
+                text = { 
+                    Text(
+                        stringResource(R.string.por_prioridad),
+                        color = MaterialTheme.colorScheme.onBackground
+                    ) 
+                },
                 onClick = {
                     onOrderSelected(TaskOrder.PRIORITY)
                     expanded = false
@@ -258,7 +271,12 @@ fun OrderDropdownMenu(
             )
 
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.por_fecha)) },
+                text = { 
+                    Text(
+                        stringResource(R.string.por_fecha),
+                        color = MaterialTheme.colorScheme.onBackground
+                    ) 
+                },
                 onClick = {
                     onOrderSelected(TaskOrder.DATE)
                     expanded = false

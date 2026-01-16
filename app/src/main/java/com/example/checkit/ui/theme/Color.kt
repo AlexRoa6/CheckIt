@@ -60,4 +60,4 @@ val PriorityLowBgDark = Color(0x3322C55E)  // green-500/20
 
 // FOOTER BUTTON
 val FooterDeleteBgLight = Color(0x1AEF4444)
-val FooterDeleteBgDark = Color(0x33EF4444)
+val FooterDeleteBgDark = Color(0x6FEF4444)
