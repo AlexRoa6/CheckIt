@@ -2,6 +2,8 @@ package com.example.checkit.data
 
 import com.example.checkit.model.Task
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class TaskRepository(private val taskDao: TaskDao) {
 
@@ -20,4 +22,5 @@ class TaskRepository(private val taskDao: TaskDao) {
     suspend fun deleteTask(task: Task) {
         taskDao.deleteTask(task)
     }
+
 }

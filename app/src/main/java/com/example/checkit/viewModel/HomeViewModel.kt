@@ -9,8 +9,11 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.checkit.CheckItAplication
 import com.example.checkit.model.Task
 import com.example.checkit.data.TaskRepository
+import com.example.checkit.model.TaskOrder
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -18,15 +21,30 @@ import kotlinx.coroutines.launch
 
 data class HomeUiState(val tasks: List<Task> = emptyList())
 class HomeViewModel(private val repository: TaskRepository) : ViewModel(){
-    val uiState: StateFlow<HomeUiState> = repository.getTasks()
-        .map { HomeUiState(it) }
-        .stateIn(
+    private val _order = MutableStateFlow(TaskOrder.DATE)
+
+    val uiState: StateFlow<HomeUiState> =
+        combine(
+            repository.getTasks(),
+            _order
+        ) { tasks, order ->
+            val sortedTasks = when (order) {
+                TaskOrder.PRIORITY ->
+                    tasks.sortedByDescending { it.priority }
+
+                TaskOrder.DATE ->
+                    tasks.sortedBy { it.date }
+            }
+            HomeUiState(sortedTasks)
+        }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeUiState()
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = HomeUiState(emptyList())
         )
 
-
+    fun changeOrder(order: TaskOrder) {
+        _order.value = order
+    }
     fun updateTaskCompletion(task: Task, isCompleted: Boolean){
         viewModelScope.launch {
             repository.updateTaskCompleted(task.id, isCompleted)

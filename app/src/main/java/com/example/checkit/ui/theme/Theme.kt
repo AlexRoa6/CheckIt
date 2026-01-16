@@ -14,24 +14,47 @@ import androidx.compose.ui.platform.LocalContext
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     background = BackgroundLight,
-    surface = CardLight,
+    surface = TextSecondaryLight,
     onBackground = TextPrimaryLight,
-    onSurface = TextPrimaryLight
+    onSurface = IconBgLight,
+    error = PriorityHigh,
+    scrim = PriorityMedium,
+    onTertiary = PriorityLow,
+    onSurfaceVariant = FooterDeleteBgDark,
+    outline = oulineLight
 )
 
 private val DarkColorScheme = darkColorScheme(
     primary = Primary,
     background = BackgroundDark,
-    surface = CardDark,
+    surface = TextSecondaryDark,
     onBackground = TextPrimaryDark,
-    onSurface = TextPrimaryDark
+    onSurface = IconBgDark,
+    error = PriorityHigh,
+    scrim = PriorityMedium,
+    onTertiary = PriorityLow,
+    onSurfaceVariant = FooterDeleteBgDark,
+    outline = oulineDark
+
 )
 
 @Composable
 fun CheckItTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Dynamic color is available on Android 12+
+    // Dynamic color in this app is turned off for learning purposes
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = DarkColorScheme
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,

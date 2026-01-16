@@ -15,4 +15,7 @@
     <string name="saveButon">Guardar Tarea</string>
     <string name="saveDateButon">Seleccionar Fecha</string>
     <string name="priority_label">Prioridad</string>
+    <string name="ordenar">Ordenar</string>
+    <string name="por_prioridad">Por prioridad</string>
+    <string name="por_fecha">Por fecha</string>
 </resources>
