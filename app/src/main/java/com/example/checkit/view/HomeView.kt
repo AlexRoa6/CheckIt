@@ -149,20 +149,24 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
 
 @Composable
 fun Title(modifier: Modifier = Modifier) {
-    Row(
-        modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.calendar_check),
-            contentDescription = stringResource(R.string.icono_calendar_description)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = stringResource(R.string.mis_tareas),
-            style = MaterialTheme.typography.headlineLarge,
-
+    Box(modifier.fillMaxWidth().padding(8.dp)){
+        Row (modifier.align(Alignment.CenterStart)){
+            Icon(
+                painter = painterResource(R.drawable.calendar_check),
+                contentDescription = stringResource(R.string.icono_calendar_description)
             )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.mis_tareas),
+                style = MaterialTheme.typography.headlineLarge,
+            )
+        }
+        IconButton({}, modifier.align(Alignment.CenterEnd)) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_filter_list_24),
+                contentDescription = null
+            )
+        }
     }
 }
 
@@ -209,7 +213,7 @@ fun Modifier.borderSoloIzquierdo(color: Color, width: Dp): Modifier = this.drawB
     val strokeWidth = width.toPx()
     val y = size.height - strokeWidth / 2
 
-    // Ejemplo: Borde solo en la izquierda
+
     drawLine(
         color = color,
         start = Offset(0f, 0f),
