@@ -8,8 +8,6 @@
     <string name="description_label">Decripcion (Opcional)</string>
     <string name="description_placeholder">Añadir mas detalles…</string>
     <string name="fecha_label">Fecha de Vencimiento</string>
-    <string name="dueDate_label">Fecha de Vencimiento</string>
-    <string name="dueDate_plcaeholder">Seleccionar fecha</string>
     <string name="cancelar">Cancelar</string>
     <string name="nueva_tarea">Nueva Tarea</string>
     <string name="saveButon">Guardar Tarea</string>

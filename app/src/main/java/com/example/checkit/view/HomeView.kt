@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -70,8 +71,8 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
     Scaffold(
         topBar = { TopAppBar() },
         floatingActionButton = { ButtonNewTask(navController) }
-    ) { it ->
-        LazyColumn(contentPadding = it) {
+    ) { paddingValues ->
+        LazyColumn(contentPadding = PaddingValues(bottom = 16.dp, start = 16.dp, end = 16.dp, top = paddingValues.calculateTopPadding())) {
             item { Title(onOrderSelected = { order -> viewModel.changeOrder(order)}) }
 
             items(uiState.tasks, key = { it.id }) { task ->
