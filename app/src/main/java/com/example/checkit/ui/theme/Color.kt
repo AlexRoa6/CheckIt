@@ -29,7 +29,7 @@ val Gray600 = Color(0xFF4B5563)
 val Gray700 = Color(0xFF374151)
 val Gray800 = Color(0xFF1F2937)
 
-val oulineLight = Color(0x3300CDFF)
+val oulineLight = Color(0x6600CDFF)
 val oulineDark = Color(0x33044252)
 
 // DIVIDERS
@@ -37,7 +37,7 @@ val DividerLight = Gray200
 val DividerDark = Color(0x1F293780) // gray-800/50
 
 // ICON BACKGROUND
-val IconBgLight = Color(0x1A119ADE)   // primary /10
+val IconBgLight = Color(0xFFE0F4FF)   // primary /10
 val IconBgDark = Color(0xFF233C47)
 
 // CHECKBOX BORDER (dark)
