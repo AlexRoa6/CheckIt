@@ -1,6 +1,11 @@
 package com.example.checkit.view
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -28,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -100,6 +107,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
 @Composable
 fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Unit, modifier: Modifier = Modifier) {
     val isChecked = task.completed
+    var showDescription by remember { mutableStateOf(false) }
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     val colorTask = if (isChecked) MaterialTheme.colorScheme.onPrimaryFixed else MaterialTheme.colorScheme.onBackground
     val borderColor = when (task.priority) {
@@ -122,10 +130,10 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
         ),
         shape = Shapes.large,
         border = BorderStroke(  1.dp, if (!isChecked) MaterialTheme.colorScheme.tertiary
-        else MaterialTheme.colorScheme.onSecondary,)
+        else MaterialTheme.colorScheme.onSecondary,),
+        onClick = {showDescription = !showDescription},
     ) {
-        Box(Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.padding(start = 16.dp, bottom = 16.dp, top = 16.dp, end = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = isChecked,
                     onCheckedChange = onTaskCompleted,
@@ -135,7 +143,13 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                         uncheckedColor = MaterialTheme.colorScheme.onBackground
                     )
                 )
-                Column {
+                Column (Modifier.weight(1f)
+                    .animateContentSize(
+                        animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+                )){
                     Text(
                         text = task.title,
                         textDecoration = if (isChecked) TextDecoration.LineThrough else null,
@@ -148,25 +162,35 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                         color = colorTask,
                         style = MaterialTheme.typography.bodyMedium
                     )
+                    Spacer(Modifier.height(5.dp))
+                    if (showDescription && task.description.isNotBlank()) {
+                        Text(
+                            text = task.description,
+                            color = colorTask,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                IconButton(
+                    deleteTask,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    shape = Shapes.medium
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.delete_icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
                 }
             }
-            IconButton(deleteTask,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(8.dp),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                    contentColor = MaterialTheme.colorScheme.error
-                ),
-                shape = Shapes.medium
-            ) {
-                Icon(painter = painterResource(R.drawable.delete_icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(20.dp)
-                )
-            }
-        }
+
     }
 }
 
