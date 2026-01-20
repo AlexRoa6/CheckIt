@@ -1,5 +1,6 @@
 package com.example.checkit.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -100,7 +101,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
 fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Unit, modifier: Modifier = Modifier) {
     val isChecked = task.completed
     val formattedDate = task.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-    val colorTask = if (isChecked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onBackground
+    val colorTask = if (isChecked) MaterialTheme.colorScheme.onPrimaryFixed else MaterialTheme.colorScheme.onBackground
     val borderColor = when (task.priority) {
         Priority.Alta -> MaterialTheme.colorScheme.error
         Priority.Media -> MaterialTheme.colorScheme.scrim
@@ -110,11 +111,18 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(4.dp)
             .borderSoloIzquierdo(borderColor, 5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface,
-        )
+            containerColor = if (!isChecked) MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.secondary,
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+        shape = Shapes.large,
+        border = BorderStroke(  1.dp, if (!isChecked) MaterialTheme.colorScheme.tertiary
+        else MaterialTheme.colorScheme.onSecondary,)
     ) {
         Box(Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -124,7 +132,7 @@ fun TaskCard(task: Task, onTaskCompleted:(Boolean) -> Unit, deleteTask: () -> Un
                     colors = CheckboxDefaults.colors(
                         checkedColor = MaterialTheme.colorScheme.primary,
                         checkmarkColor = MaterialTheme.colorScheme.onBackground,
-                        uncheckedColor = MaterialTheme.colorScheme.surface
+                        uncheckedColor = MaterialTheme.colorScheme.onBackground
                     )
                 )
                 Column {
@@ -232,13 +240,13 @@ fun ButtonNewTask(navController: NavController, modifier: Modifier = Modifier) {
 
 fun Modifier.borderSoloIzquierdo(color: Color, width: Dp): Modifier = this.drawBehind {
     val strokeWidth = width.toPx()
-    val cornerRadius = 8.dp.toPx() // Shapes.medium = 8.dp
-    
-    // Dibujar el borde izquierdo con las esquinas redondeadas de la Card
+    val cornerRadius = 24.dp.toPx()
+    val verticalPadding = 16.dp.toPx()
+
     drawRoundRect(
         color = color,
-        topLeft = Offset(0f, 0f),
-        size = Size(strokeWidth, size.height),
+        topLeft = Offset(0f, verticalPadding),
+        size = Size(strokeWidth, size.height - (verticalPadding * 2)),
         cornerRadius = CornerRadius(cornerRadius, cornerRadius),
         style = Stroke(width = strokeWidth)
     )

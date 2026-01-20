@@ -43,6 +43,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -149,7 +150,12 @@ OutlinedTextField(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary), Shapes.medium)
+                .shadow(
+                elevation = 4.dp,
+                shape = Shapes.medium
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 focusedContainerColor = MaterialTheme.colorScheme.onSurface,
@@ -187,7 +193,12 @@ OutlinedTextField(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(128.dp),
+                .height(128.dp)
+                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary), Shapes.large)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = Shapes.large,
+                ),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
                 focusedContainerColor = MaterialTheme.colorScheme.onSurface,
@@ -196,7 +207,7 @@ OutlinedTextField(
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
                 focusedTextColor = MaterialTheme.colorScheme.onBackground
             ),
-            shape = Shapes.medium,
+            shape = Shapes.large,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done
         )
@@ -342,7 +353,11 @@ fun PriorityToggle(
     Row(
         modifier = Modifier
             .height(48.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = Shapes.medium
+            ),
     ) {
         options.forEach { option ->
             val isSelected = option == selectedOption
@@ -353,7 +368,7 @@ fun PriorityToggle(
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(8.dp))
                     .clickable { onOptionSelected(option) }
-                    .background(color = if (isSelected) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSurface)
+                    .background(color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {

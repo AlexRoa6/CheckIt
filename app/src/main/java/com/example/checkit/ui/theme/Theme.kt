@@ -1,6 +1,5 @@
 package com.example.checkit.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +20,11 @@ private val LightColorScheme = lightColorScheme(
     scrim = PriorityMedium,
     onTertiary = PriorityLow,
     onSurfaceVariant = FooterDeleteBgDark,
-    outline = oulineLight
+    outline = oulineLight,
+    tertiary = CardBorderLight,
+    secondary = CardCheckedBackGroundLight,
+    onSecondary = BorderCardCheckedBackGroundLight,
+    onPrimaryFixed = CheckedTextLight,
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -34,7 +37,12 @@ private val DarkColorScheme = darkColorScheme(
     scrim = PriorityMedium,
     onTertiary = PriorityLow,
     onSurfaceVariant = FooterDeleteBgDark,
-    outline = oulineDark
+    outline = oulineDark,
+    tertiary = CardBorderDark,
+    secondary = CardCheckedBackGroundDark,
+    onSecondary = BorderCardCheckedBackGroundDark,
+    onPrimaryFixed = CheckedTextDark
+
 
 )
 
