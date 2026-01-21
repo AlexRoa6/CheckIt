@@ -1,12 +1,17 @@
 package com.example.checkit.view
 
+import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -40,6 +45,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -47,6 +53,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -59,6 +66,11 @@ import com.example.checkit.ui.theme.Primary
 import com.example.checkit.ui.theme.Shapes
 import com.example.checkit.viewModel.NewTaskUiState
 import com.example.checkit.viewModel.NewTaskViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -69,6 +81,30 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var interstitialAd by remember { mutableStateOf<InterstitialAd?>(null) }
+
+    // Cargar el anuncio intersticial
+    DisposableEffect(Unit) {
+        val adRequest = AdRequest.Builder().build()
+        // ID de prueba de Google para intersticiales - reemplazar con tu ID real en producción
+        InterstitialAd.load(
+            context,
+            "ca-app-pub-3940256099942544/1033173712",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    interstitialAd = null
+                }
+            }
+        )
+        onDispose { interstitialAd = null }
+    }
+
     Scaffold(
         topBar = { TopBar { navController.popBackStack() } }
     ) { it ->
@@ -82,7 +118,21 @@ fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = 
                 onDateSelected = viewModel::onDateSelected
             )
             SaveButton(
-                { viewModel.onClickSaveButton { navController.popBackStack() } },
+                {
+                    viewModel.onClickSaveButton {
+                        val ad = interstitialAd
+                        if (ad != null) {
+                            ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    navController.popBackStack()
+                                }
+                            }
+                            ad.show(context as Activity)
+                        } else {
+                            navController.popBackStack()
+                        }
+                    }
+                },
                 Modifier.align(Alignment.BottomCenter)
             )
         }
@@ -429,7 +479,7 @@ fun SaveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = stringResource(R.string.saveButon),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
 
         )

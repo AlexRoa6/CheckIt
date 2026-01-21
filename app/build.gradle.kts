@@ -73,4 +73,7 @@ dependencies {
 
     // Soporte para Kotlin Coroutines (Flow)
     implementation("androidx.room:room-ktx:2.8.4")
+
+    implementation ("com.google.android.gms:play-services-ads:23.3.0")
+
 }

@@ -69,9 +69,9 @@ val Typography = Typography(
     ),
     titleSmall = TextStyle(
         fontFamily = AppFont,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
 
     // CUERPO DE TEXTO

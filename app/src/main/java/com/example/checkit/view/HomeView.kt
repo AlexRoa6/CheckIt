@@ -59,7 +59,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -85,9 +89,10 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
     val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         topBar = { TopAppBar() },
-        floatingActionButton = { ButtonNewTask(navController) }
+        floatingActionButton = { ButtonNewTask(navController) },
+        bottomBar = { AdBanner() }
     ) { paddingValues ->
-        LazyColumn(contentPadding = PaddingValues(bottom = 16.dp, start = 16.dp, end = 16.dp, top = paddingValues.calculateTopPadding())) {
+        LazyColumn(contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding() + 16.dp, start = 16.dp, end = 16.dp, top = paddingValues.calculateTopPadding())) {
             item { Title(onOrderSelected = { order -> viewModel.changeOrder(order)}) }
 
             items(uiState.tasks, key = { it.id }) { task ->
@@ -101,6 +106,22 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = view
             }
         }
     }
+}
+
+@Composable
+fun AdBanner(modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth(),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.BANNER)
+                // ID de prueba de Google para banners - reemplazar con tu ID real en producción
+                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
 
 
