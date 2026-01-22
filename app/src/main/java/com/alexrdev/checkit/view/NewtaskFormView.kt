@@ -83,7 +83,7 @@ fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = 
 
         InterstitialAd.load(
             context,
-            "ca-app-pub-9196016042691783/7673228343",
+            "ca-app-pub-3940256099942544/1033173712",
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
