@@ -8,16 +8,16 @@ plugins {
 }
 
 android {
-    namespace = "com.example.checkit"
+    namespace = "com.alexrdev.checkit"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.checkit"
+        applicationId = "com.alexrdev.checkit"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

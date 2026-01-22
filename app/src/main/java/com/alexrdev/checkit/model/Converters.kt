@@ -1,4 +1,4 @@
-package com.example.checkit.model
+package com.alexrdev.checkit.model
 
 import androidx.room.TypeConverter
 import java.time.LocalDate

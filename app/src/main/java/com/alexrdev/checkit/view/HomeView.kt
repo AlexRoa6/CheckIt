@@ -1,11 +1,9 @@
-package com.example.checkit.view
+package com.alexrdev.checkit.view
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,13 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,7 +52,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.ads.AdRequest
@@ -66,21 +59,13 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.checkit.R
-import com.example.checkit.model.Priority
-import com.example.checkit.model.Task
-import com.example.checkit.model.TaskOrder
-import com.example.checkit.ui.theme.CheckItTheme
-import com.example.checkit.ui.theme.FooterDeleteBgDark
-import com.example.checkit.ui.theme.Gray200
-import com.example.checkit.ui.theme.Gray500
-import com.example.checkit.ui.theme.Primary
-import com.example.checkit.ui.theme.PriorityHigh
-import com.example.checkit.ui.theme.PriorityLow
-import com.example.checkit.ui.theme.PriorityMedium
-import com.example.checkit.ui.theme.Shapes
-import com.example.checkit.viewModel.HomeViewModel
+import com.alexrdev.checkit.R
+import com.alexrdev.checkit.model.Priority
+import com.alexrdev.checkit.model.Task
+import com.alexrdev.checkit.model.TaskOrder
+import com.alexrdev.checkit.ui.theme.CheckItTheme
+import com.alexrdev.checkit.ui.theme.Shapes
+import com.alexrdev.checkit.viewModel.HomeViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -116,8 +101,8 @@ fun AdBanner(modifier: Modifier = Modifier) {
         factory = { context ->
             AdView(context).apply {
                 setAdSize(AdSize.BANNER)
-                // ID de prueba de Google para banners - reemplazar con tu ID real en producción
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+
+                adUnitId = "ca-app-pub-9196016042691783/1299391688"
                 loadAd(AdRequest.Builder().build())
             }
         }

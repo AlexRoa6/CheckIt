@@ -1,8 +1,8 @@
-package com.example.checkit
+package com.alexrdev.checkit
 
 import android.app.Application
-import com.example.checkit.data.AppDataBase
-import com.example.checkit.data.TaskRepository
+import com.alexrdev.checkit.data.AppDataBase
+import com.alexrdev.checkit.data.TaskRepository
 import com.google.android.gms.ads.MobileAds
 
 class CheckItAplication: Application() {

@@ -1,4 +1,4 @@
-package com.example.checkit
+package com.alexrdev.checkit
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,14 +9,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavHostController
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import com.example.checkit.view.HomeScreen
-import com.example.checkit.view.NewTaskForm
-import com.example.checkit.ui.theme.CheckItTheme
-import com.example.checkit.viewModel.HomeViewModel
-import com.example.checkit.viewModel.NewTaskViewModel
+import com.alexrdev.checkit.view.HomeScreen
+import com.alexrdev.checkit.view.NewTaskForm
+import com.alexrdev.checkit.ui.theme.CheckItTheme
+import com.alexrdev.checkit.viewModel.HomeViewModel
+import com.alexrdev.checkit.viewModel.NewTaskViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

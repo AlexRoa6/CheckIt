@@ -1,4 +1,4 @@
-package com.example.checkit.ui.theme
+package com.alexrdev.checkit.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

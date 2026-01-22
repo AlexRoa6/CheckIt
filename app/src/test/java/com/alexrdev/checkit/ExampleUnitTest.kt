@@ -1,4 +1,4 @@
-package com.example.checkit
+package com.alexrdev.checkit
 
 import org.junit.Test
 

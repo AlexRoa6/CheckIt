@@ -1,12 +1,12 @@
-package com.example.checkit.data
+package com.alexrdev.checkit.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.checkit.model.Converters
-import com.example.checkit.model.Task
+import com.alexrdev.checkit.model.Converters
+import com.alexrdev.checkit.model.Task
 
 @Database(entities = [Task::class], version = 1)
 @TypeConverters(Converters::class)

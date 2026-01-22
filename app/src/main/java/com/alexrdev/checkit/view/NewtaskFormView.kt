@@ -1,4 +1,4 @@
-package com.example.checkit.view
+package com.alexrdev.checkit.view
 
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import com.example.checkit.R
-import com.example.checkit.ui.theme.CheckItTheme
+import com.alexrdev.checkit.R
+import com.alexrdev.checkit.ui.theme.CheckItTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,12 +30,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,19 +51,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.checkit.model.Priority
-import com.example.checkit.ui.theme.BackgroundDark
-import com.example.checkit.ui.theme.Gray200
-import com.example.checkit.ui.theme.IconBgDark
-import com.example.checkit.ui.theme.IconBgLight
-import com.example.checkit.ui.theme.Primary
-import com.example.checkit.ui.theme.Shapes
-import com.example.checkit.viewModel.NewTaskUiState
-import com.example.checkit.viewModel.NewTaskViewModel
+import com.alexrdev.checkit.model.Priority
+import com.alexrdev.checkit.ui.theme.Gray200
+import com.alexrdev.checkit.ui.theme.Shapes
+import com.alexrdev.checkit.viewModel.NewTaskUiState
+import com.alexrdev.checkit.viewModel.NewTaskViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -87,10 +80,10 @@ fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = 
     // Cargar el anuncio intersticial
     DisposableEffect(Unit) {
         val adRequest = AdRequest.Builder().build()
-        // ID de prueba de Google para intersticiales - reemplazar con tu ID real en producción
+
         InterstitialAd.load(
             context,
-            "ca-app-pub-3940256099942544/1033173712",
+            "ca-app-pub-9196016042691783/7673228343",
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
