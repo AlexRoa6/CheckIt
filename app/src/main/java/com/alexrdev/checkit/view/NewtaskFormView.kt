@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import com.alexrdev.checkit.BuildConfig
 import com.alexrdev.checkit.R
 import com.alexrdev.checkit.ui.theme.CheckItTheme
 import androidx.compose.foundation.background
@@ -83,7 +84,7 @@ fun NewTaskForm(navController: NavHostController, viewModel: NewTaskViewModel = 
 
         InterstitialAd.load(
             context,
-            "ca-app-pub-9196016042691783/7673228343",
+            BuildConfig.ADMOB_INTERSTITIAL_ID,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {

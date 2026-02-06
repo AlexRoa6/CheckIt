@@ -59,6 +59,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.alexrdev.checkit.BuildConfig
 import com.alexrdev.checkit.R
 import com.alexrdev.checkit.model.Priority
 import com.alexrdev.checkit.model.Task
@@ -102,7 +103,7 @@ fun AdBanner(modifier: Modifier = Modifier) {
             AdView(context).apply {
                 setAdSize(AdSize.BANNER)
 
-                adUnitId = "ca-app-pub-9196016042691783/1299391688"
+                adUnitId = BuildConfig.ADMOB_BANNER_ID
                 loadAd(AdRequest.Builder().build())
             }
         }

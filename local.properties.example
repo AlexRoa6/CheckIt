@@ -1,0 +1,9 @@
+# Template for local.properties
+# Copy this file to local.properties and replace with your actual values
+
+sdk.dir=YOUR_ANDROID_SDK_PATH
+
+# AdMob IDs (these are Google's test IDs - replace with your real IDs for production)
+ADMOB_APP_ID=ca-app-pub-3940256099942544~3347511713
+ADMOB_BANNER_ID=ca-app-pub-3940256099942544/6300978111
+ADMOB_INTERSTITIAL_ID=ca-app-pub-3940256099942544/1033173712

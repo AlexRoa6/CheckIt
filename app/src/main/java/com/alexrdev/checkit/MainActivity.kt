@@ -45,7 +45,9 @@ fun AppNavigation() {
         composable("home") {
             HomeScreen(navController, viewModel(factory = HomeViewModel.Factory))
         }
-        composable("formNewTask") { NewTaskForm(navController,  viewModel(factory = NewTaskViewModel.Factory)) }
+        composable("formNewTask") {
+            NewTaskForm(navController,  viewModel(factory = NewTaskViewModel.Factory))
+        }
     }
 }
 
